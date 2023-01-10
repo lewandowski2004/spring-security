@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Fragmenty</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/5.2.2/css/bootstrap.min.css"/>
+    <link th:href="@{/css/sidebars.css}" rel="stylesheet" />
+</head>
+<body>
+<nav th:fragment="menu" style="border-bottom: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)" class="navbar navbar-expand-md navbar-light fixed-top bg-light fs-5">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">Sport.pl</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+                aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                <li class="nav-item me-auto dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Top 10</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/entries/top10">Najlepiej ocenianych artykułów</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/events/list">Wydarzenia</a>
+                </li>
+                <li sec:authorize="hasRole('ADMIN')" class="nav-item me-auto dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Zarządzaj</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/users">Użytkownicy</a></li>
+                        <li><a class="dropdown-item" href="/categories">Kategorie</a></li>
+                        <li><a class="dropdown-item" href="/leagues">Ligi</a></li>
+                        <li><a class="dropdown-item" href="/entries">Artykuły</a></li>
+                        <li><a class="dropdown-item" href="/events">Wydarzenia</a></li>
+                    </ul>
+                </li>
+                <li sec:authorize="hasRole('ADMIN')" class="nav-item me-auto dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Dodaj</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/categories/form">Dodaj Kategorię</a></li>
+                        <li><a class="dropdown-item" href="/leagues/form">Dodaj Ligę</a></li>
+                        <li><a class="dropdown-item" href="/entries/form">Dodaj Wpis</a></li>
+                        <li><a class="dropdown-item" href="/events/form">Dodaj Wydarzenie</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul  class="navbar-nav mb-2 mb-md-0">
+                <a sec:authorize="isAnonymous()" href="/login" class="btn btn-outline-primary m-2"
+                   role="button">Zaloguj</a>
+                <a sec:authorize="isAnonymous()" href="/register/form" class="btn btn-outline-success m-2"
+                   role="button">Rejestracja</a>
+                <li sec:authorize="isAuthenticated()" class="nav-item me-auto dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <span th:text="${globalUsername}"/></a>
+                    <ul class="dropdown-menu dropdown-menu-lg-end">
+                        <li><a class="dropdown-item" href="/logout">wyloguj</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div th:fragment="side_menu" class="flex-shrink-0 px-3 bg-white" style="width: 280px;">
+    <span class="fs-5 fw-semibold">Sport / Liga</span>
+
+    <ul th:each="category : ${categories}" style="font-size: 18px" class="list-unstyled ps-0">
+        <li class="mb-1">
+            <button class="btn btn-toggle align-items-center rounded" data-bs-toggle="collapse" th:data-bs-target="@{#collapse_{categoryId} (categoryId=${category.id})}" aria-expanded="true">
+                <span th:text="${category.categoryName}"></span>
+            </button>
+            <div class="collapse show" th:id="@{collapse_{categoryId} (categoryId=${category.id})}">
+                <ul th:each="league : ${category.leagues}" class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                    <li><a th:href="@{/ (categoryId=${null}, leagueId=${league.id})}" class="link-dark rounded" th:text="${league.leagueName}"></a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="border-top my-3"></li>
+    </ul>
+</div>
+<head th:fragment="head_extensible">
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/5.2.2/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="/webjars/jquery/3.6.1/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="/webjars/bootstrap/5.2.2/js/bootstrap.bundle.min.js"></script>
+</head>
+<footer th:fragment="footer" style="width: 100%;bottom: 0;">
+    <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.05);border-top: var(--bs-border-width) var(--bs-border-style) var(--bs-border-color)">
+    © 2022 Copyright: Radosław Lewandowski
+    </div>
+</footer>
+
+<script type="text/javascript" src="/webjars/jquery/3.6.1/dist/jquery.min.js"></script>
+<script type="text/javascript" src="/webjars/bootstrap/5.2.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
